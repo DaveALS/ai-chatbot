@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Solutions Assistant</title>
+    <style>
+        :root {
+            --primary-blue: #0083FF;
+            --bg-gray: #F8F9FA;
+            --text-dark: #1A1A1A;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            background-color: var(--bg-gray);
+        }
+        #chat-container {
+            width: 100%;
+            max-width: 380px;
+            position: relative;
+            margin-top: 100px;
+            background-color: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        #chat-container.expanded {
+            max-width: 800px;
+        }
+        .aimee-avatar {
+            position: absolute;
+            top: -100px;
+            right: -20px;
+            width: 200px;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 24px;
+            background-color: #f0f4f8;
+        }
+        .welcome-message {
+            text-align: left;
+            padding: 20px;
+            max-width: 60%;
+        }
+        .welcome-message h2 {
+            color: var(--text-dark);
+            font-size: 24px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .welcome-message p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .primary-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .primary-btn:hover {
+            transform: translateY(-2px);
+        }
+        .chat-content {
+            display: none;
+        }
+        .chat-content.visible {
+            display: block;
+        }
+        #messages {
+            height: 400px;
+            border: 1px solid #eee;
+            margin-bottom: 20px;
+            padding: 20px;
+            overflow-y: auto;
+            border-radius: 12px;
+            background-color: #fff;
+        }
+        .message {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            max-width: 85%;
+            line-height: 1.5;
+        }
+        .user-message {
+            background-color: var(--primary-blue);
+            color: white;
+            margin-left: auto;
+        }
+        .ai-message {
+            background-color: #f0f4f8;
+            color: var(--text-dark);
+            margin-right: auto;
+        }
+        .input-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        #userInput {
+            flex-grow: 1;
+            padding: 14px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        #userInput:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0,131,255,0.1);
+        }
+        .typing-indicator {
+            display: none;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 10px;
+            padding-left: 20px;
+        }
+        #contact-options {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f4f8;
+            border-radius: 12px;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .contact-option {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .contact-option h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-blue);
+        }
+        .contact-form {
+            display: grid;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .contact-form input {
+            padding: 8px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        .contact-link {
+            color: var(--primary-blue);
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div class="aimee-avatar" style="background-image: url('/images/aimee.jpg');"></div>
+        <div class="welcome-message" id="welcomeMessage">
+            <h2>Hi, I'm Aimee!</h2>
+            <p>I can help you explore AI solutions for your business</p>
+            <button class="primary-btn">Let's Chat</button>
+        </div>
+        <div class="chat-content" id="chatContent">
+            <div id="messages"></div>
+            <div class="typing-indicator" id="typingIndicator">Aimee is typing...</div>
+            <div class="input-container">
+                <input type="text" id="userInput" placeholder="Type your message...">
+                <button onclick="sendMessage()" class="primary-btn">Send</button>
+            </div>
+            <div id="contact-options">
+                <h3>Would you like to explore this further?</h3>
+                <div class="contact-grid">
+                    <div class="contact-option">
+                        <h4>Schedule a Meeting</h4>
+                        <p>Book a convenient time for an initial discussion</p>
+                        <a href="https://calendly.com/davrhall/initial_discussion" target="_blank" class="contact-link">Schedule Now →</a>
+                    </div>
+                    <div class="contact-option">
+                        <h4>Call Us Directly</h4>
+                        <p>Speak with us on:</p>
+                        <a href="tel:07432679725" class="contact-link">07432 679725</a>
+                    </div>
+                    <div class="contact-option">
+                        <h4>Leave Your Details</h4>
+                        <p>We'll get back to you as soon as possible</p>
+                        <div class="contact-form">
+                            <input type="text" id="contactName" placeholder="Your Name">
+                            <input type="email" id="contactEmail" placeholder="Your Email">
+                            <input type="tel" id="contactPhone" placeholder="Phone Number (optional)">
+                            <button onclick="submitContactForm()" class="primary-btn">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sessionId = Date.now().toString();
+        const messagesDiv = document.getElementById('messages');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const contactOptions = document.getElementById('contact-options');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const chatContent = document.getElementById('chatContent');
+        const chatContainer = document.getElementById('chat-container');
+        
+        welcomeMessage.addEventListener('click', () => {
+            welcomeMessage.style.display = 'none';
+            chatContent.classList.add('visible');
+            chatContainer.classList.add('expanded');
+            sendInitialMessage();
+        });
+
+        function sendInitialMessage() {
+            appendMessage("Thanks for reaching out! I'm here to help you explore how AI can benefit your business.", false);
+            appendMessage("Please select a number to explore AI solutions in that area:\n\n1. AI for workplace assistance\n2. Sales and marketing enhancement\n3. Customer communications\n4. Task automation\n5. AI knowledge base implementation\n6. Something else", false);
+        }
+
+        function appendMessage(text, isUser) {
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            div.textContent = text;
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            appendMessage(message, true);
+            userInput.value = '';
+            typingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message, sessionId })
+                });
+
+                const data = await response.json();
+                typingIndicator.style.display = 'none';
+
+                if (data.reply) {
+                    appendMessage(data.reply, false);
+                    
+                    if (data.stage === 'exploration' && 
+                        (message.toLowerCase().includes('yes') || 
+                         message.toLowerCase().includes('interested'))) {
+                        contactOptions.style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.style.display = 'none';
+                appendMessage('I apologize, but I encountered an error. Please try again.', false);
+            }
+        }
+
+        async function submitContactForm() {
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const phone = document.getElementById('contactPhone').value.trim();
+
+            if (!name || !email) {
+                alert('Please provide your name and email address.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/submit-contact', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        sessionId
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    appendMessage(`Thank you ${name}! We'll get back to you shortly at ${email}.`, false);
+                    contactOptions.style.display = 'none';
+                } else {
+                    throw new Error('Failed to submit contact form');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error submitting your details. Please try again or use one of the other contact methods.');
+            }
+        }
+
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
