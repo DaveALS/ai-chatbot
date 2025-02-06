@@ -1,0 +1,40 @@
+Folder PATH listing
+Volume serial number is 005C0074 B89C:1770
+C:.
+|   .env
+|   .gitignore
+|   directory_structure.txt
+|   eslint.config.js
+|   index.html
+|   package-lock.json
+|   package.json
+|   postcss.config.cjs
+|   README.md
+|   tailwind.config.js
+|   tree.txt
+|   vite.config.js
+|   
++---public
+|       vite.svg
+|       
+\---src
+    |   App.css
+    |   App.jsx
+    |   index.css
+    |   main.jsx
+    |   
+    +---assets
+    |       react.svg
+    |       
+    +---components
+    |   |   ChatInterface.jsx
+    |   |   
+    |   \---ui
+    |           alert.jsx
+    |           button.jsx
+    |           card.jsx
+    |           input.jsx
+    |           
+    \---lib
+            utils.js
+            
